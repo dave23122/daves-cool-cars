@@ -2,18 +2,16 @@ const API = "YOUR_WORKER_URL_HERE";
 
 /* ---------- CAR DATA ---------- */
 const cars = [
-  {
-    name: "Lamborghini",
-    img: "https://upload.wikimedia.org/wikipedia/commons/9/9f/Lamborghini_Aventador.jpg"
-  },
-  {
-    name: "Ferrari",
-    img: "https://upload.wikimedia.org/wikipedia/commons/3/3e/Ferrari_488.jpg"
-  },
-  {
-    name: "Rolls Royce",
-    img: "https://upload.wikimedia.org/wikipedia/commons/6/6b/Rolls-Royce_Phantom.jpg"
-  }
+  { name: "Lamborghini Aventador", price: 500000, img: "https://images.unsplash.com/photo-1621135802920-133df287f89c" },
+  { name: "Ferrari 488", price: 400000, img: "https://images.unsplash.com/photo-1592194996308-7b43878e84a6" },
+  { name: "Rolls Royce Phantom", price: 600000, img: "https://images.unsplash.com/photo-1606664515524-ed2f786a0bd6" },
+  { name: "Bugatti Chiron", price: 3000000, img: "https://images.unsplash.com/photo-1544636331-e26879cd4d9b" },
+  { name: "McLaren 720S", price: 450000, img: "https://images.unsplash.com/photo-1553440569-bcc63803a83d" },
+  { name: "Porsche 911 Turbo", price: 250000, img: "https://images.unsplash.com/photo-1503376780353-7e6692767b70" },
+  { name: "Aston Martin DB11", price: 300000, img: "https://images.unsplash.com/photo-1549921296-3ecf9f1d3f7d" },
+  { name: "Bentley Continental GT", price: 350000, img: "https://images.unsplash.com/photo-1511919884226-fd3cad34687c" },
+  { name: "Mercedes AMG GT", price: 280000, img: "https://images.unsplash.com/photo-1502877338535-766e1452684a" },
+  { name: "Audi R8", price: 220000, img: "https://images.unsplash.com/photo-1519681393784-d120267933ba" }
 ];
 
 let selectedCar = null;
@@ -25,10 +23,15 @@ function initDropdown() {
   cars.forEach(car => {
     const div = document.createElement("div");
     div.className = "dropdown-item";
-    div.innerHTML = `<img src="${car.img}"><span>${car.name}</span>`;
+
+    div.innerHTML = `
+      <img src="${car.img}">
+      <h3>${car.name}</h3>
+      <p>$${car.price.toLocaleString()}</p>
+    `;
 
     div.onclick = () => {
-      selectedCar = car.name;
+      selectedCar = car;
       renderFields();
     };
 
@@ -38,26 +41,28 @@ function initDropdown() {
 
 /* ---------- FIELDS ---------- */
 function renderFields() {
-  const el = document.getElementById("customFields");
-  el.innerHTML = `
+  document.getElementById("customFields").innerHTML = `
     <label>Color</label>
     <input id="color">
 
     <label>Interior</label>
     <select id="interior">
-      <option>Leather</option>
-      <option>Alcantara</option>
+      <option>Leather (+$5,000)</option>
+      <option>Alcantara (+$7,000)</option>
     </select>
 
     <label>Extras</label>
-    <input id="extras" placeholder="Sunroof, Sport Package">
+    <input id="extras" placeholder="Sport package, carbon kit">
   `;
 }
 
 /* ---------- SUBMIT ---------- */
 async function submitOrder() {
+  if (!selectedCar) return alert("Select a car");
+
   const data = {
-    car: selectedCar,
+    car: selectedCar.name,
+    basePrice: selectedCar.price,
     color: document.getElementById("color").value,
     interior: document.getElementById("interior").value,
     extras: document.getElementById("extras").value
@@ -68,7 +73,7 @@ async function submitOrder() {
     body: JSON.stringify(data)
   });
 
-  alert("Order placed!");
+  alert("Luxury order placed 🚗");
 }
 
 /* ---------- LOAD ORDERS ---------- */
@@ -82,9 +87,8 @@ async function loadOrders() {
     <tr>
       <th></th>
       <th>Car</th>
-      <th>Color</th>
-      <th>Interior</th>
-      <th>Extras</th>
+      <th>Price</th>
+      <th>Specs</th>
     </tr>
   `;
 
@@ -93,9 +97,8 @@ async function loadOrders() {
       <tr>
         <td><input type="checkbox" value="${o.id}"></td>
         <td>${o.car}</td>
-        <td>${o.color}</td>
-        <td>${o.interior}</td>
-        <td>${o.extras}</td>
+        <td>$${o.basePrice}</td>
+        <td>${o.color}, ${o.interior}, ${o.extras}</td>
       </tr>
     `;
   });
@@ -105,7 +108,7 @@ async function loadOrders() {
   });
 }
 
-/* ---------- BUTTON STATE ---------- */
+/* ---------- BUTTONS ---------- */
 function getSelected() {
   return [...document.querySelectorAll("input:checked")].map(x => x.value);
 }
@@ -118,7 +121,7 @@ function updateButtons() {
 
 /* ---------- DELETE ---------- */
 async function deleteOrders() {
-  if (!confirm("Are you sure?")) return;
+  if (!confirm("Delete selected orders?")) return;
 
   await fetch(API + "/delete", {
     method: "POST",
@@ -141,7 +144,7 @@ async function sendInvoice() {
     })
   });
 
-  alert("Invoice sent!");
+  alert("Invoice sent ✉️");
 }
 
 /* ---------- INIT ---------- */
