@@ -13,7 +13,6 @@ const cars = [
   { name: "Mercedes AMG GT", price: 280000, img: "https://images.unsplash.com/photo-1502877338535-766e1452684a" },
   { name: "Audi R8", price: 220000, img: "https://images.unsplash.com/photo-1603584173870-7f23fdae1b7a" }
 ];
-
 let selectedCar = null;
 
 /* ---------- DROPDOWN ---------- */
@@ -34,12 +33,10 @@ function initDropdown() {
     div.onclick = () => {
       selectedCar = car;
 
-      // REMOVE OLD SELECTION
       document.querySelectorAll(".dropdown-item").forEach(el => {
         el.classList.remove("selected");
       });
 
-      // ADD NEW SELECTION
       div.classList.add("selected");
 
       renderFields();
@@ -52,8 +49,15 @@ function initDropdown() {
 /* ---------- FIELDS ---------- */
 function renderFields() {
   document.getElementById("customFields").innerHTML = `
+    
     <label>Color</label>
-    <input id="color">
+    <select id="color">
+      <option>Black</option>
+      <option>White</option>
+      <option>Silver</option>
+      <option>Red</option>
+      <option>Blue</option>
+    </select>
 
     <label>Interior</label>
     <select id="interior">
@@ -62,8 +66,21 @@ function renderFields() {
     </select>
 
     <label>Extras</label>
-    <input id="extras" placeholder="Sport package, carbon kit">
+    <div id="extrasGroup">
+      <label><input type="checkbox" value="Carbon Fiber Package (+$10,000)"> Carbon Fiber Package (+$10,000)</label><br>
+      <label><input type="checkbox" value="Premium Sound System (+$5,000)"> Premium Sound System (+$5,000)</label><br>
+      <label><input type="checkbox" value="Sport Exhaust (+$7,500)"> Sport Exhaust (+$7,500)</label><br>
+      <label><input type="checkbox" value="Driver Assistance Pack (+$4,000)"> Driver Assistance Pack (+$4,000)</label><br>
+      <label><input type="checkbox" value="Panoramic Roof (+$6,000)"> Panoramic Roof (+$6,000)</label>
+    </div>
   `;
+}
+
+/* ---------- GET EXTRAS ---------- */
+function getSelectedExtras() {
+  return [...document.querySelectorAll("#extrasGroup input:checked")]
+    .map(x => x.value)
+    .join(", ");
 }
 
 /* ---------- SUBMIT ---------- */
@@ -75,7 +92,7 @@ async function submitOrder() {
     basePrice: selectedCar.price,
     color: document.getElementById("color").value,
     interior: document.getElementById("interior").value,
-    extras: document.getElementById("extras").value
+    extras: getSelectedExtras()
   };
 
   await fetch(API + "/create", {
@@ -108,7 +125,7 @@ async function loadOrders() {
         <td><input type="checkbox" value="${o.id}"></td>
         <td>${o.car}</td>
         <td>$${o.basePrice}</td>
-        <td>${o.color}, ${o.interior}, ${o.extras}</td>
+        <td>${o.color}, ${o.interior}${o.extras ? ", " + o.extras : ""}</td>
       </tr>
     `;
   });
