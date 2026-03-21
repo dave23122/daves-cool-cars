@@ -3,12 +3,12 @@ const API = "YOUR_WORKER_URL_HERE";
 /* ---------- CAR DATA ---------- */
 const cars = [
   { name: "Lamborghini Aventador", price: 500000, img: "https://images.unsplash.com/photo-1621135802920-133df287f89c" },
-  { name: "Ferrari 488", price: 400000, img: "https://images.unsplash.com/photo-1592194996308-7b43878e84a6" },
+  { name: "Ferrari 488", price: 400000, img: "https://images.unsplash.com/photo-1597687228894-111db66403b6" },
   { name: "Rolls Royce Phantom", price: 600000, img: "https://images.unsplash.com/photo-1606664515524-ed2f786a0bd6" },
   { name: "Bugatti Chiron", price: 3000000, img: "https://images.unsplash.com/photo-1544636331-e26879cd4d9b" },
   { name: "McLaren 720S", price: 450000, img: "https://images.unsplash.com/photo-1553440569-bcc63803a83d" },
   { name: "Porsche 911 Turbo", price: 250000, img: "https://images.unsplash.com/photo-1503376780353-7e6692767b70" },
-  { name: "Aston Martin DB11", price: 300000, img: "https://images.unsplash.com/photo-1549921296-3ecf9f1d3f7d" },
+  { name: "Aston Martin DB11", price: 300000, img: "https://images.unsplash.com/photo-1642201855395-1c8b44e6e42b" },
   { name: "Bentley Continental GT", price: 350000, img: "https://images.unsplash.com/photo-1511919884226-fd3cad34687c" },
   { name: "Mercedes AMG GT", price: 280000, img: "https://images.unsplash.com/photo-1502877338535-766e1452684a" },
   { name: "Audi R8", price: 220000, img: "https://images.unsplash.com/photo-1519681393784-d120267933ba" }
