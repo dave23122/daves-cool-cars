@@ -11,7 +11,7 @@ const cars = [
   { name: "Aston Martin DB11", price: 300000, img: "https://images.unsplash.com/photo-1642201855395-1c8b44e6e42b" },
   { name: "Bentley Continental GT", price: 350000, img: "https://images.unsplash.com/photo-1511919884226-fd3cad34687c" },
   { name: "Mercedes AMG GT", price: 280000, img: "https://images.unsplash.com/photo-1502877338535-766e1452684a" },
-  { name: "Audi R8", price: 220000, img: "https://images.unsplash.com/photo-1519681393784-d120267933ba" }
+  { name: "Audi R8", price: 220000, img: "https://images.unsplash.com/photo-1603584173870-7f23fdae1b7a" }
 ];
 
 let selectedCar = null;
