@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Orders</title>
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+<nav>
+  <a href="index.html">Home</a>
+  <a href="create.html">Create Order</a>
+  <a href="orders.html">View Orders</a>
+</nav>
+
+<div class="container">
+  <h2>Orders</h2>
+
+  <div class="actions">
+    <button id="invoiceBtn" disabled onclick="sendInvoice()">Send Invoice</button>
+    <button id="deleteBtn" disabled onclick="deleteOrders()">Delete Order</button>
+  </div>
+
+  <table id="ordersTable"></table>
+</div>
+
+<script src="app.js"></script>
+</body>
+</html>
