@@ -19,6 +19,7 @@ let selectedCar = null;
 /* ---------- DROPDOWN ---------- */
 function initDropdown() {
   const container = document.getElementById("carDropdown");
+  container.innerHTML = "";
 
   cars.forEach(car => {
     const div = document.createElement("div");
@@ -32,6 +33,15 @@ function initDropdown() {
 
     div.onclick = () => {
       selectedCar = car;
+
+      // REMOVE OLD SELECTION
+      document.querySelectorAll(".dropdown-item").forEach(el => {
+        el.classList.remove("selected");
+      });
+
+      // ADD NEW SELECTION
+      div.classList.add("selected");
+
       renderFields();
     };
 

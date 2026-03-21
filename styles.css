@@ -1,24 +1,33 @@
+/* GLOBAL */
 body {
   margin: 0;
   font-family: 'Segoe UI', sans-serif;
-  background: linear-gradient(135deg, #0f2027, #203a43, #2c5364);
+  background: radial-gradient(circle at top, #1a1a1a, #0b0b0b 70%);
   color: white;
 }
 
+/* NAVBAR */
 nav {
   display: flex;
   gap: 20px;
   padding: 15px 30px;
-  background: rgba(0,0,0,0.6);
-  backdrop-filter: blur(10px);
+  background: rgba(0,0,0,0.7);
+  backdrop-filter: blur(12px);
+  border-bottom: 1px solid rgba(255,255,255,0.1);
 }
 
 nav a {
-  color: white;
+  color: #ddd;
   text-decoration: none;
   font-weight: 500;
+  transition: 0.2s;
 }
 
+nav a:hover {
+  color: white;
+}
+
+/* CONTAINERS */
 .container {
   padding: 30px;
 }
@@ -28,25 +37,42 @@ nav a {
   margin-top: 120px;
 }
 
+/* HEADINGS */
 h1 {
-  font-size: 3rem;
-  margin-bottom: 30px;
+  font-size: 3.2rem;
+  margin-bottom: 20px;
+  letter-spacing: 1px;
 }
 
+/* PREMIUM BUTTONS */
 .btn {
-  padding: 14px 28px;
-  border-radius: 12px;
+  padding: 14px 32px;
+  border-radius: 999px;
   border: none;
   cursor: pointer;
   margin: 10px;
-  font-weight: bold;
-  background: linear-gradient(45deg, #gold, #d4af37);
-  color: black;
-  transition: 0.3s;
+  font-weight: 600;
+  font-size: 1rem;
+  background: linear-gradient(135deg, #d4af37, #f5d77a);
+  color: #111;
+  box-shadow: 0 4px 20px rgba(212,175,55,0.4);
+  transition: all 0.25s ease;
 }
 
 .btn:hover {
-  transform: scale(1.05);
+  transform: translateY(-2px) scale(1.03);
+  box-shadow: 0 6px 25px rgba(212,175,55,0.6);
+}
+
+/* SECONDARY BUTTON */
+.btn.secondary {
+  background: transparent;
+  border: 1px solid rgba(255,255,255,0.2);
+  color: white;
+}
+
+.btn.secondary:hover {
+  background: rgba(255,255,255,0.1);
 }
 
 /* CAR GRID */
@@ -57,18 +83,26 @@ h1 {
   margin-bottom: 20px;
 }
 
+/* CAR CARD */
 .dropdown-item {
-  background: rgba(255,255,255,0.08);
+  background: rgba(255,255,255,0.05);
   border-radius: 16px;
   padding: 15px;
   cursor: pointer;
   transition: 0.3s;
-  border: 1px solid rgba(255,255,255,0.1);
+  border: 1px solid rgba(255,255,255,0.08);
 }
 
 .dropdown-item:hover {
-  transform: translateY(-5px);
-  background: rgba(255,255,255,0.15);
+  transform: translateY(-6px);
+  background: rgba(255,255,255,0.1);
+}
+
+/* ✅ SELECTED CAR HIGHLIGHT */
+.dropdown-item.selected {
+  border: 2px solid #d4af37;
+  background: rgba(212,175,55,0.15);
+  box-shadow: 0 0 20px rgba(212,175,55,0.4);
 }
 
 .dropdown-item img {
@@ -99,6 +133,12 @@ td, th {
   padding: 12px;
 }
 
+/* ACTION BUTTONS */
+.actions button {
+  margin-right: 10px;
+}
+
 .actions button:disabled {
   opacity: 0.3;
+  cursor: not-allowed;
 }
