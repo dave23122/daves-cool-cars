@@ -9,16 +9,16 @@ const EMAILJS_TEMPLATE_ID = "template_lei0z72";
 
 /* ---------- CAR DATA ---------- */
 const cars = [
-  { name: "Lamborghini Aventador", price: 500000, img: "https://images.unsplash.com/photo-1621135802920-133df287f89c" },
-  { name: "Ferrari 488", price: 400000, img: "https://images.unsplash.com/photo-1597687228894-111db66403b6" },
-  { name: "Rolls Royce Phantom", price: 600000, img: "https://images.unsplash.com/photo-1606664515524-ed2f786a0bd6" },
-  { name: "Bugatti Chiron", price: 3000000, img: "https://images.unsplash.com/photo-1544636331-e26879cd4d9b" },
-  { name: "McLaren 720S", price: 450000, img: "https://images.unsplash.com/photo-1553440569-bcc63803a83d" },
-  { name: "Porsche 911 Turbo", price: 250000, img: "https://images.unsplash.com/photo-1503376780353-7e6692767b70" },
-  { name: "Aston Martin DB11", price: 300000, img: "https://images.unsplash.com/photo-1642201855395-1c8b44e6e42b" },
-  { name: "Bentley Continental GT", price: 350000, img: "https://images.unsplash.com/photo-1511919884226-fd3cad34687c" },
-  { name: "Mercedes AMG GT", price: 280000, img: "https://images.unsplash.com/photo-1502877338535-766e1452684a" },
-  { name: "Audi R8", price: 220000, img: "https://images.unsplash.com/photo-1603584173870-7f23fdae1b7a" }
+  { name: "Lamborghini Aventador", price: 500000, img: "images/lamborghini-aventador.webp" },
+  { name: "Ferrari 488", price: 400000, img: "images/ferrari-488.webp" },
+  { name: "Rolls Royce Phantom", price: 600000, img: "images/rolls-royce-phantom.webp" },
+  { name: "Bugatti Chiron", price: 3000000, img: "images/bugatti-chiron.webp" },
+  { name: "McLaren 720S", price: 450000, img: "images/mclaren-720s.webp" },
+  { name: "Porsche 911 Turbo", price: 250000, img: "images/porsche-911-turbo.webp" },
+  { name: "Aston Martin DB11", price: 300000, img: "images/aston-martin-db11.webp" },
+  { name: "Bentley Continental GT", price: 350000, img: "images/bentley-continental-gt.webp" },
+  { name: "Mercedes AMG GT", price: 280000, img: "images/mercedes-amg-gt.webp" },
+  { name: "Audi R8", price: 220000, img: "images/audi-r8.webp" }
 ];
 
 let selectedCar = null;
@@ -137,13 +137,20 @@ async function submitOrder() {
     ...config
   };
 
-  await fetch(API + "/create", {
+  const res = await fetch(API + "/create", {
     method: "POST",
     headers: {
       "Content-Type": "application/json"
     },
     body: JSON.stringify(data)
   });
+
+  const result = await res.json();
+
+  if (!res.ok) {
+    alert(result.message || "Failed to create order.");
+    return;
+  }
 
   alert("Luxury order placed successfully.");
 }
