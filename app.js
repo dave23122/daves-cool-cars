@@ -61,19 +61,26 @@ function initDropdown() {
       <p class="car-price">$${car.price.toLocaleString()}</p>
     `;
 
-    div.onclick = () => {
-      selectedCar = car;
+div.onclick = () => {
+  selectedCar = car;
 
-      document.querySelectorAll(".dropdown-item").forEach(el => {
-        el.classList.remove("selected");
-      });
-
-      div.classList.add("selected");
-      renderFields();
-    };
-
-    container.appendChild(div);
+  document.querySelectorAll(".dropdown-item").forEach(el => {
+    el.classList.remove("selected");
   });
+
+  div.classList.add("selected");
+  renderFields();
+
+  setTimeout(() => {
+    const customFields = document.getElementById("customFields");
+    if (customFields) {
+      customFields.scrollIntoView({
+        behavior: "smooth",
+        block: "start"
+      });
+    }
+  }, 100);
+};
 }
 
 /* ---------- CONFIG FORM ---------- */
