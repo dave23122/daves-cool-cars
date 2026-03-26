@@ -1,4 +1,4 @@
-const API = "YOUR_WORKER_URL_HERE";
+const API = "https://daves-cool-cars-api.daves-cool-cars-api.workers.dev";
 
 /* ---------- CAR DATA ---------- */
 const cars = [
