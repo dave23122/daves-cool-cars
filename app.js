@@ -1,5 +1,12 @@
 const API = "https://daves-cool-cars-api.daves-cool-cars-api.workers.dev";
 
+/* =========================
+   EMAILJS CONFIG
+========================= */
+const EMAILJS_PUBLIC_KEY = "pznpgQ";
+const EMAILJS_SERVICE_ID = "service_";
+const EMAILJS_TEMPLATE_ID = "template_";
+
 /* ---------- CAR DATA ---------- */
 const cars = [
   { name: "Lamborghini Aventador", price: 500000, img: "https://images.unsplash.com/photo-1621135802920-133df287f89c" },
@@ -18,57 +25,24 @@ let selectedCar = null;
 
 /* ---------- CONFIG OPTIONS ---------- */
 const configOptions = [
-  {
-    id: "color",
-    label: "Exterior Color",
-    options: ["Black Metallic", "Pearl White", "Rosso Red", "Midnight Blue", "Graphite Grey"]
-  },
-  {
-    id: "interior",
-    label: "Interior Material",
-    options: ["Leather", "Premium Leather", "Alcantara", "Quilted Leather", "Carbon Performance Interior"]
-  },
-  {
-    id: "wheel",
-    label: "Wheel Design",
-    options: ["20\" Performance", "21\" Forged", "Diamond-Cut Alloy", "Black Gloss Sport", "Carbon Aero Wheels"]
-  },
-  {
-    id: "brake",
-    label: "Brake Package",
-    options: ["Standard Performance", "Carbon Ceramic", "Track Performance", "High-Endurance", "Red Caliper Sport"]
-  },
-  {
-    id: "sound",
-    label: "Audio System",
-    options: ["Standard Premium", "Bose Surround", "Bowers & Wilkins", "Bang & Olufsen", "Bespoke Studio Audio"]
-  },
-  {
-    id: "roof",
-    label: "Roof Style",
-    options: ["Standard Coupe", "Panoramic Glass", "Carbon Fiber Roof", "Convertible", "Black Contrast Roof"]
-  },
-  {
-    id: "seats",
-    label: "Seat Style",
-    options: ["Comfort Seats", "Sport Seats", "Ventilated Luxury Seats", "Heated GT Seats", "Track Bucket Seats"]
-  },
-  {
-    id: "trim",
-    label: "Trim Finish",
-    options: ["Brushed Aluminum", "Open-Pore Wood", "Piano Black", "Carbon Fiber", "Satin Titanium"]
-  },
-  {
-    id: "lighting",
-    label: "Lighting Package",
-    options: ["Standard LED", "Adaptive Matrix LED", "Ambient Signature Lighting", "Laser Headlights", "Night Vision Assist"]
-  },
-  {
-    id: "assistance",
-    label: "Driver Assistance",
-    options: ["Standard Assist", "Parking Pack", "Highway Assist", "360° Camera Pack", "Full Luxury Assist Suite"]
-  }
+  { id: "color", label: "Exterior Color", options: ["Black Metallic", "Pearl White", "Rosso Red", "Midnight Blue", "Graphite Grey"] },
+  { id: "interior", label: "Interior Material", options: ["Leather", "Premium Leather", "Alcantara", "Quilted Leather", "Carbon Performance Interior"] },
+  { id: "wheel", label: "Wheel Design", options: ["20\" Performance", "21\" Forged", "Diamond-Cut Alloy", "Black Gloss Sport", "Carbon Aero Wheels"] },
+  { id: "brake", label: "Brake Package", options: ["Standard Performance", "Carbon Ceramic", "Track Performance", "High-Endurance", "Red Caliper Sport"] },
+  { id: "sound", label: "Audio System", options: ["Standard Premium", "Bose Surround", "Bowers & Wilkins", "Bang & Olufsen", "Bespoke Studio Audio"] },
+  { id: "roof", label: "Roof Style", options: ["Standard Coupe", "Panoramic Glass", "Carbon Fiber Roof", "Convertible", "Black Contrast Roof"] },
+  { id: "seats", label: "Seat Style", options: ["Comfort Seats", "Sport Seats", "Ventilated Luxury Seats", "Heated GT Seats", "Track Bucket Seats"] },
+  { id: "trim", label: "Trim Finish", options: ["Brushed Aluminum", "Open-Pore Wood", "Piano Black", "Carbon Fiber", "Satin Titanium"] },
+  { id: "lighting", label: "Lighting Package", options: ["Standard LED", "Adaptive Matrix LED", "Ambient Signature Lighting", "Laser Headlights", "Night Vision Assist"] },
+  { id: "assistance", label: "Driver Assistance", options: ["Standard Assist", "Parking Pack", "Highway Assist", "360° Camera Pack", "Full Luxury Assist Suite"] }
 ];
+
+/* =========================
+   INIT EMAILJS
+========================= */
+if (window.emailjs) {
+  emailjs.init(EMAILJS_PUBLIC_KEY);
+}
 
 /* ---------- DROPDOWN / CAR GRID ---------- */
 function initDropdown() {
@@ -182,18 +156,18 @@ async function loadOrders() {
   const res = await fetch(API + "/orders");
   const orders = await res.json();
 
-table.innerHTML = `
-  <thead>
-    <tr>
-      <th style="width: 56px;">
-        <input type="checkbox" id="selectAllCheckbox" onchange="toggleSelectAll(this)">
-      </th>
-      <th>Car</th>
-      <th>Base Price</th>
-      <th>Configuration</th>
-    </tr>
-  </thead>
-  <tbody>
+  table.innerHTML = `
+    <thead>
+      <tr>
+        <th style="width: 56px;">
+          <input type="checkbox" id="selectAllCheckbox" onchange="toggleSelectAll(this)">
+        </th>
+        <th>Car</th>
+        <th>Base Price</th>
+        <th>Configuration</th>
+      </tr>
+    </thead>
+    <tbody>
       ${orders.map(o => `
         <tr>
           <td><input type="checkbox" value="${o.id}"></td>
@@ -226,7 +200,7 @@ function getSelected() {
   return [...document.querySelectorAll('tbody input[type="checkbox"]:checked')].map(x => x.value);
 }
 
-/* ---------- SELECT ALL ------------ */
+/* ---------- SELECT ALL ---------- */
 function toggleSelectAll(masterCheckbox) {
   const rowCheckboxes = document.querySelectorAll('tbody input[type="checkbox"]');
 
@@ -274,23 +248,112 @@ async function deleteOrders() {
   loadOrders();
 }
 
-/* ---------- SEND INVOICE ---------- */
+/* =========================
+   BUILD EMAIL INVOICE HTML
+========================= */
+function buildInvoiceHtml(orders) {
+  let total = 0;
+
+  const rows = orders.map((o, index) => {
+    total += Number(o.basePrice || 0);
+
+    return `
+      <div style="margin-bottom:32px; padding:24px; border:1px solid #e5e7eb; border-radius:16px; background:#fafafa;">
+        <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:14px;">
+          <h2 style="margin:0; font-size:22px; color:#111827;">${index + 1}. ${o.car}</h2>
+          <div style="font-size:20px; font-weight:700; color:#111827;">
+            $${Number(o.basePrice).toLocaleString()}
+          </div>
+        </div>
+
+        <div style="color:#4b5563; font-size:15px; line-height:1.9;">
+          <div><strong>Exterior Color:</strong> ${o.color || "-"}</div>
+          <div><strong>Interior Material:</strong> ${o.interior || "-"}</div>
+          <div><strong>Wheel Design:</strong> ${o.wheel || "-"}</div>
+          <div><strong>Brake Package:</strong> ${o.brake || "-"}</div>
+          <div><strong>Audio System:</strong> ${o.sound || "-"}</div>
+          <div><strong>Roof Style:</strong> ${o.roof || "-"}</div>
+          <div><strong>Seat Style:</strong> ${o.seats || "-"}</div>
+          <div><strong>Trim Finish:</strong> ${o.trim || "-"}</div>
+          <div><strong>Lighting Package:</strong> ${o.lighting || "-"}</div>
+          <div><strong>Driver Assistance:</strong> ${o.assistance || "-"}</div>
+        </div>
+      </div>
+    `;
+  }).join("");
+
+  return `
+    <div style="font-family:Arial, sans-serif; background:#f3f4f6; padding:40px;">
+      <div style="max-width:900px; margin:0 auto; background:white; border-radius:24px; overflow:hidden; box-shadow:0 12px 40px rgba(0,0,0,0.08);">
+
+        <div style="background:linear-gradient(135deg, #111827, #1f2937); color:white; padding:40px;">
+          <div style="font-size:14px; letter-spacing:2px; text-transform:uppercase; color:#d4af37; margin-bottom:10px;">
+            Dave's Cool Cars
+          </div>
+          <h1 style="margin:0; font-size:38px;">Luxury Vehicle Invoice</h1>
+          <p style="margin-top:12px; color:#d1d5db; font-size:16px; line-height:1.7;">
+            Thank you for your order. Below is a summary of your selected luxury vehicles and specifications.
+          </p>
+        </div>
+
+        <div style="padding:40px;">
+          ${rows}
+
+          <div style="margin-top:24px; padding:28px; border-radius:18px; background:#111827; color:white;">
+            <div style="display:flex; justify-content:space-between; align-items:center;">
+              <div style="font-size:18px; color:#d1d5db;">Total</div>
+              <div style="font-size:32px; font-weight:800; color:#d4af37;">
+                $${Number(total).toLocaleString()}
+              </div>
+            </div>
+          </div>
+
+          <p style="margin-top:28px; color:#6b7280; font-size:14px; line-height:1.8;">
+            This invoice is for order tracking and quotation purposes only. No payment is required through this system.
+          </p>
+        </div>
+      </div>
+    </div>
+  `;
+}
+
+/* =========================
+   SEND INVOICE WITH EMAILJS
+========================= */
 async function sendInvoice() {
   const email = prompt("Enter the email address to send the invoice to:");
   if (!email) return;
 
-  await fetch(API + "/invoice", {
-    method: "POST",
-    headers: {
-      "Content-Type": "application/json"
-    },
-    body: JSON.stringify({
-      ids: getSelected(),
-      email
-    })
-  });
+  const selectedIds = getSelected();
 
-  alert("Invoice sent successfully.");
+  if (selectedIds.length === 0) {
+    alert("Please select at least one order.");
+    return;
+  }
+
+  try {
+    const res = await fetch(API + "/orders");
+    const allOrders = await res.json();
+
+    const selectedOrders = allOrders.filter(order => selectedIds.includes(String(order.id)));
+
+    if (selectedOrders.length === 0) {
+      alert("No matching orders found.");
+      return;
+    }
+
+    const invoiceHtml = buildInvoiceHtml(selectedOrders);
+
+    await emailjs.send(EMAILJS_SERVICE_ID, EMAILJS_TEMPLATE_ID, {
+      to_email: email,
+      invoice_html: invoiceHtml
+    });
+
+    alert("Invoice sent successfully.");
+  } catch (err) {
+    console.error("Email send error:", err);
+    alert("Failed to send invoice. Please check your EmailJS setup.");
+  }
 }
 
 /* ---------- INIT ---------- */
