@@ -212,6 +212,8 @@ async function loadOrders() {
   document.querySelectorAll('tbody input[type="checkbox"]').forEach(cb => {
     cb.onchange = updateButtons;
   });
+
+  updateButtons();
 }
 
 /* ---------- SELECTED IDS ---------- */
@@ -264,7 +266,8 @@ async function deleteOrders() {
     body: JSON.stringify(getSelected())
   });
 
-  loadOrders();
+  await loadOrders();
+  updateButtons();
 }
 
 /* =========================
