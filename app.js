@@ -74,12 +74,14 @@ function initDropdown() {
       setTimeout(() => {
         const customFields = document.getElementById("customFields");
         if (customFields) {
-          customFields.scrollIntoView({
-            behavior: "smooth",
-            block: "start"
+          const y = customFields.getBoundingClientRect().top + window.pageYOffset - 20;
+
+          window.scrollTo({
+            top: y,
+            behavior: "smooth"
           });
         }
-      }, 100);
+      }, 250);
     };
 
     container.appendChild(div);
