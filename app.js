@@ -210,8 +210,14 @@ async function loadOrders() {
   `;
 
   document.querySelectorAll('tbody input[type="checkbox"]').forEach(cb => {
-    cb.onchange = updateButtons;
+    cb.addEventListener("change", updateButtons);
   });
+
+  const selectAllCheckbox = document.getElementById("selectAllCheckbox");
+  if (selectAllCheckbox) {
+    selectAllCheckbox.checked = false;
+    selectAllCheckbox.indeterminate = false;
+  }
 
   updateButtons();
 }
@@ -258,15 +264,36 @@ function updateButtons() {
 async function deleteOrders() {
   if (!confirm("Are you sure you want to delete the selected orders?")) return;
 
+  const selectedIds = getSelected();
+
+  if (selectedIds.length === 0) {
+    updateButtons();
+    return;
+  }
+
   await fetch(API + "/delete", {
     method: "POST",
     headers: {
       "Content-Type": "application/json"
     },
-    body: JSON.stringify(getSelected())
+    body: JSON.stringify(selectedIds)
   });
 
   await loadOrders();
+
+  // Force-reset controls for mobile reliability
+  const invoiceBtn = document.getElementById("invoiceBtn");
+  const deleteBtn = document.getElementById("deleteBtn");
+  const selectAllCheckbox = document.getElementById("selectAllCheckbox");
+
+  if (invoiceBtn) invoiceBtn.disabled = true;
+  if (deleteBtn) deleteBtn.disabled = true;
+
+  if (selectAllCheckbox) {
+    selectAllCheckbox.checked = false;
+    selectAllCheckbox.indeterminate = false;
+  }
+
   updateButtons();
 }
 
