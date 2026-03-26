@@ -321,12 +321,6 @@ function buildInvoiceHtml(orders) {
    SEND INVOICE WITH EMAILJS
 ========================= */
 async function sendInvoice() {
-
-  await emailjs.send(EMAILJS_SERVICE_ID, EMAILJS_TEMPLATE_ID, {
-    to_email: email,
-    invoice_html: "<h1>TEST EMAIL</h1>"
-  });
-/*
   const email = prompt("Enter the email address to send the invoice to:");
   if (!email) return;
 
@@ -349,10 +343,15 @@ async function sendInvoice() {
     }
 
     const invoiceHtml = buildInvoiceHtml(selectedOrders);
-
+/*
     await emailjs.send(EMAILJS_SERVICE_ID, EMAILJS_TEMPLATE_ID, {
       to_email: email,
       invoice_html: invoiceHtml
+    });
+*/
+    await emailjs.send(EMAILJS_SERVICE_ID, EMAILJS_TEMPLATE_ID, {
+      to_email: email,
+      invoice_html: "<h1>TEST EMAIL</h1>"
     });
 
     alert("Invoice sent successfully.");
@@ -360,7 +359,6 @@ async function sendInvoice() {
     console.error("Email send error:", err);
     alert("Failed to send invoice. Please check your EmailJS setup.");
   }
-*/
 }
 
 /* ---------- INIT ---------- */
