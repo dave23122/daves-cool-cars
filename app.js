@@ -182,16 +182,18 @@ async function loadOrders() {
   const res = await fetch(API + "/orders");
   const orders = await res.json();
 
-  table.innerHTML = `
-    <thead>
-      <tr>
-        <th style="width: 56px;"></th>
-        <th>Car</th>
-        <th>Base Price</th>
-        <th>Configuration</th>
-      </tr>
-    </thead>
-    <tbody>
+table.innerHTML = `
+  <thead>
+    <tr>
+      <th style="width: 56px;">
+        <input type="checkbox" id="selectAllCheckbox" onchange="toggleSelectAll(this)">
+      </th>
+      <th>Car</th>
+      <th>Base Price</th>
+      <th>Configuration</th>
+    </tr>
+  </thead>
+  <tbody>
       ${orders.map(o => `
         <tr>
           <td><input type="checkbox" value="${o.id}"></td>
@@ -224,14 +226,37 @@ function getSelected() {
   return [...document.querySelectorAll('tbody input[type="checkbox"]:checked')].map(x => x.value);
 }
 
+/* ---------- SELECT ALL ------------ */
+function toggleSelectAll(masterCheckbox) {
+  const rowCheckboxes = document.querySelectorAll('tbody input[type="checkbox"]');
+
+  rowCheckboxes.forEach(cb => {
+    cb.checked = masterCheckbox.checked;
+  });
+
+  updateButtons();
+}
+
 /* ---------- BUTTON STATE ---------- */
 function updateButtons() {
-  const has = getSelected().length > 0;
+  const selected = getSelected();
+  const has = selected.length > 0;
+
   const invoiceBtn = document.getElementById("invoiceBtn");
   const deleteBtn = document.getElementById("deleteBtn");
+  const selectAllCheckbox = document.getElementById("selectAllCheckbox");
+  const rowCheckboxes = document.querySelectorAll('tbody input[type="checkbox"]');
 
   if (invoiceBtn) invoiceBtn.disabled = !has;
   if (deleteBtn) deleteBtn.disabled = !has;
+
+  if (selectAllCheckbox) {
+    const total = rowCheckboxes.length;
+    const checked = [...rowCheckboxes].filter(cb => cb.checked).length;
+
+    selectAllCheckbox.checked = total > 0 && checked === total;
+    selectAllCheckbox.indeterminate = checked > 0 && checked < total;
+  }
 }
 
 /* ---------- DELETE ---------- */
