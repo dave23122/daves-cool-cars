@@ -216,7 +216,7 @@ table.innerHTML = `
     </tbody>
   `;
 
-  document.querySelectorAll('input[type="checkbox"]').forEach(cb => {
+  document.querySelectorAll('tbody input[type="checkbox"]').forEach(cb => {
     cb.onchange = updateButtons;
   });
 }
