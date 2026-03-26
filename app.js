@@ -3,9 +3,9 @@ const API = "https://daves-cool-cars-api.daves-cool-cars-api.workers.dev";
 /* =========================
    EMAILJS CONFIG
 ========================= */
-const EMAILJS_PUBLIC_KEY = "pznpgQ";
-const EMAILJS_SERVICE_ID = "service_";
-const EMAILJS_TEMPLATE_ID = "template_";
+const EMAILJS_PUBLIC_KEY = "pznpgQQTb1kDmyvxc";
+const EMAILJS_SERVICE_ID = "service_mzkki19";
+const EMAILJS_TEMPLATE_ID = "template_lei0z72";
 
 /* ---------- CAR DATA ---------- */
 const cars = [
