@@ -249,72 +249,32 @@ async function deleteOrders() {
 }
 
 /* =========================
-   BUILD EMAIL INVOICE HTML
+   BUILD EMAIL INVOICE CONTENT
 ========================= */
-function buildInvoiceHtml(orders) {
+function buildInvoiceContent(orders) {
   let total = 0;
 
-  const rows = orders.map((o, index) => {
+  const items = orders.map((o, index) => {
     total += Number(o.basePrice || 0);
 
-    return `
-      <div style="margin-bottom:32px; padding:24px; border:1px solid #e5e7eb; border-radius:16px; background:#fafafa;">
-        <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:14px;">
-          <h2 style="margin:0; font-size:22px; color:#111827;">${index + 1}. ${o.car}</h2>
-          <div style="font-size:20px; font-weight:700; color:#111827;">
-            $${Number(o.basePrice).toLocaleString()}
-          </div>
-        </div>
+    return `${index + 1}. ${o.car} - $${Number(o.basePrice).toLocaleString()}
+Exterior Color: ${o.color || "-"}
+Interior Material: ${o.interior || "-"}
+Wheel Design: ${o.wheel || "-"}
+Brake Package: ${o.brake || "-"}
+Audio System: ${o.sound || "-"}
+Roof Style: ${o.roof || "-"}
+Seat Style: ${o.seats || "-"}
+Trim Finish: ${o.trim || "-"}
+Lighting Package: ${o.lighting || "-"}
+Driver Assistance: ${o.assistance || "-"}
+`;
+  }).join("\n----------------------------------------\n\n");
 
-        <div style="color:#4b5563; font-size:15px; line-height:1.9;">
-          <div><strong>Exterior Color:</strong> ${o.color || "-"}</div>
-          <div><strong>Interior Material:</strong> ${o.interior || "-"}</div>
-          <div><strong>Wheel Design:</strong> ${o.wheel || "-"}</div>
-          <div><strong>Brake Package:</strong> ${o.brake || "-"}</div>
-          <div><strong>Audio System:</strong> ${o.sound || "-"}</div>
-          <div><strong>Roof Style:</strong> ${o.roof || "-"}</div>
-          <div><strong>Seat Style:</strong> ${o.seats || "-"}</div>
-          <div><strong>Trim Finish:</strong> ${o.trim || "-"}</div>
-          <div><strong>Lighting Package:</strong> ${o.lighting || "-"}</div>
-          <div><strong>Driver Assistance:</strong> ${o.assistance || "-"}</div>
-        </div>
-      </div>
-    `;
-  }).join("");
-
-  return `
-    <div style="font-family:Arial, sans-serif; background:#f3f4f6; padding:40px;">
-      <div style="max-width:900px; margin:0 auto; background:white; border-radius:24px; overflow:hidden; box-shadow:0 12px 40px rgba(0,0,0,0.08);">
-
-        <div style="background:linear-gradient(135deg, #111827, #1f2937); color:white; padding:40px;">
-          <div style="font-size:14px; letter-spacing:2px; text-transform:uppercase; color:#d4af37; margin-bottom:10px;">
-            Dave's Cool Cars
-          </div>
-          <h1 style="margin:0; font-size:38px;">Luxury Vehicle Invoice</h1>
-          <p style="margin-top:12px; color:#d1d5db; font-size:16px; line-height:1.7;">
-            Thank you for your order. Below is a summary of your selected luxury vehicles and specifications.
-          </p>
-        </div>
-
-        <div style="padding:40px;">
-          ${rows}
-
-          <div style="margin-top:24px; padding:28px; border-radius:18px; background:#111827; color:white;">
-            <div style="display:flex; justify-content:space-between; align-items:center;">
-              <div style="font-size:18px; color:#d1d5db;">Total</div>
-              <div style="font-size:32px; font-weight:800; color:#d4af37;">
-                $${Number(total).toLocaleString()}
-              </div>
-            </div>
-          </div>
-
-          <p style="margin-top:28px; color:#6b7280; font-size:14px; line-height:1.8;">
-            This invoice is for order tracking and quotation purposes only. No payment is required through this system.
-          </p>
-        </div>
-      </div>
-    </div>
-  `;
+  return {
+    invoiceItems: items,
+    invoiceTotal: `$${Number(total).toLocaleString()}`
+  };
 }
 
 /* =========================
@@ -342,16 +302,12 @@ async function sendInvoice() {
       return;
     }
 
-    const invoiceHtml = buildInvoiceHtml(selectedOrders);
-/*
+    const invoice = buildInvoiceContent(selectedOrders);
+
     await emailjs.send(EMAILJS_SERVICE_ID, EMAILJS_TEMPLATE_ID, {
       to_email: email,
-      invoice_html: invoiceHtml
-    });
-*/
-    await emailjs.send(EMAILJS_SERVICE_ID, EMAILJS_TEMPLATE_ID, {
-      to_email: email,
-      invoice_html: "<h1>TEST EMAIL</h1>"
+      invoice_items: invoice.invoiceItems,
+      invoice_total: invoice.invoiceTotal
     });
 
     alert("Invoice sent successfully.");
